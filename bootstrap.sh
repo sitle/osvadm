@@ -34,3 +34,44 @@ fi
 cd ~/openstack-chef-repo && bundler install
 spiceweasel infrastructure.yml
 
+## Configuration des modules python
+if [ ! -d ~/.bash-git-prompt ]; then
+  git clone https://github.com/magicmonty/bash-git-prompt.git ~/.bash-git-prompt
+  echo 'source ~/.bash-git-prompt/gitprompt.sh' >> ~/.bashrc
+fi
+
+apt-get install -y python-setuptools python-dev libffi-dev libxslt1-dev libxml2-dev
+
+if [ ! -d ~/.local ]; then
+  easy_install pip
+
+  pip install --user virtualenv
+  pip install --user virtualenvwrapper
+
+  echo 'export WORKON_HOME=~/.virtualenvs' >> ~/.bashrc
+  echo 'mkdir -p $WORKON_HOME' >> ~/.bashrc
+  echo 'source ~/.local/bin/virtualenvwrapper.sh' >> ~/.bashrc
+  echo 'PATH=$HOME/.local/bin:$PATH' >> ~/.bashrc
+  echo 'workon openstack' >> ~/.bashrc
+fi
+
+export WORKON_HOME=~/.virtualenvs
+mkdir -p $WORKON_HOME
+source ~/.local/bin/virtualenvwrapper.sh
+export PATH=$HOME/.local/bin:$PATH
+
+if [ ! -d ~/.virtualenvs/openstack ]; then
+  mkvirtualenv openstack
+  pip install python-keystoneclient
+  pip install python-novaclient
+  pip install python-neutronclient
+  pip install python-glanceclient
+  pip install python-cinderclient
+  pip install python-swiftclient
+  pip install python-heatclient
+  pip install python-ceilometerclient
+  pip install python-troveclient
+  pip install python-designateclient
+  pip install python-openstackclient
+fi
+
